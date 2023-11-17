@@ -1,19 +1,13 @@
 import base64
-import os
+from pwinput import pwinput
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet
 
 def generate_key(password):
-    salt = b'<salt aqui>'
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256,
-        iterations=100000,
-        salt=salt,
-        length=32,
-        backend=default_backend()
-    )
+    salt = b'<salt aqui'
+    kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=480000)
     key = base64.urlsafe_b64encode(kdf.derive(password))
     return key
 
@@ -41,8 +35,8 @@ def read_from_file(file_path):
 
 # exemplo de uso
 password = b'<secret aqui>'
-message = '<senha a ser criptografada'
-file_path = '<nome do arquivo que conterá a senha criptograda>.dll'
+message = pwinput(prompt='insira a senha a ser criptografada: ', mask='*')
+file_path = 'overdue1.dll'
 
 encrypted_message = encrypt_message(message, password)
 write_to_file(file_path, encrypted_message)
